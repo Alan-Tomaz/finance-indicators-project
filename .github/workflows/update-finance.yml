@@ -1,0 +1,30 @@
+# Atualiza Indicadores de ativos financeiros
+name: Atualizar Finanças
+on:
+  #  schedule:
+  # Executa toda sexta-feira às 10h (UTC)
+  #    - cron: "0 10 * * *"
+  workflow_dispatch: # Permite execução manual
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Instalar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Instalar dependências
+        run: npm install
+
+      - name: Executar script
+        run: |
+          npm run build
+          npm run start
+
+#        env:
