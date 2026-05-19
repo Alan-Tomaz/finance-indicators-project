@@ -18,6 +18,7 @@ model StockIndicators {
   ticker String
   date String
   name String?
+  sector String?
   price Decimal
   pl Decimal?
   pvp Decimal?

@@ -105,6 +105,8 @@ export const calcIndicatorsFromYahooFinance = (
   }
   /* name */
   const name = quote.price.shortName || quote.price.longName || ticket.ticker;
+  /* industry */
+  const sector = `${quote.summaryProfile.sector}: ${quote.summaryProfile.industry}`;
   /* price */
   const price = quote.price.regularMarketPrice;
   /* PL */
@@ -181,6 +183,7 @@ export const calcIndicatorsFromYahooFinance = (
     /* FORMAT DATE IN DD/MM/YYYY FORMAT */
     date: formatDate(new Date(), LANGUAGE),
     name,
+    sector: sector || "",
     price: price || 0,
     pl: pl || 0,
     dy: normalizeDy(dy) || 0,
