@@ -103,7 +103,6 @@ const calcIndicatorsFromYahooFinance = (
     console.error("Fundamentals time series data is empty.");
     return {} as Prisma.StockIndicatorsCreateInput;
   }
-
   /* name */
   const name = quote.price.shortName || quote.price.longName || ticket.ticker;
   /* price */
@@ -161,10 +160,7 @@ const calcIndicatorsFromYahooFinance = (
     fundamentalsTimeSeries[fundamentalsTimeSeries.length - 1],
   );
   /* liquidity */
-  const liquidity =
-    fundamentalsTimeSeries[fundamentalsTimeSeries.length - 1].currentAssets /
-    fundamentalsTimeSeries[fundamentalsTimeSeries.length - 1]
-      .currentLiabilities;
+  const liquidity = quote.summaryDetail.averageVolume;
   /* ev/ebit */
   const evEbit =
     quote.defaultKeyStatistics.enterpriseValue /
@@ -175,10 +171,9 @@ const calcIndicatorsFromYahooFinance = (
     fundamentalsTimeSeries[fundamentalsTimeSeries.length - 1].EBITDA;
   /* grossDebtNetWorth */
   const debtToEquityPercent =
-    (fundamentalsTimeSeries[fundamentalsTimeSeries.length - 1].totalDebt /
-      fundamentalsTimeSeries[fundamentalsTimeSeries.length - 1]
-        .stockholdersEquity) *
-    100;
+    fundamentalsTimeSeries[fundamentalsTimeSeries.length - 1].totalDebt /
+    fundamentalsTimeSeries[fundamentalsTimeSeries.length - 1]
+      .stockholdersEquity;
   /* ===== STOCK INDICATORS ===== */
   const ticketInfo: Prisma.StockIndicatorsCreateInput = {
     assetType: ticket.assetType,
@@ -199,14 +194,14 @@ const calcIndicatorsFromYahooFinance = (
     liquidity: liquidity || 0,
     cagrProfit: {
       create: {
-        value: cagrProfit,
-        period: yearsCagrProfit,
+        value: cagrProfit || 0,
+        periodYears: yearsCagrProfit || 0,
       },
     },
     cagrRevenue: {
       create: {
-        value: cagrRevenue,
-        period: yearsCagrRevenue,
+        value: cagrRevenue || 0,
+        periodYears: yearsCagrRevenue || 0,
       },
     },
   };

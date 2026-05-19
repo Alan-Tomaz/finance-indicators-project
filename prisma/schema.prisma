@@ -35,6 +35,8 @@ model StockIndicators {
   liquidity Decimal?
   createdAt DateTime? @default(now())
   updatedAt DateTime? @updatedAt
+
+  @@index([ticker, createdAt(sort: Desc)])
 }
 
 model FiiIndicators {
@@ -58,6 +60,8 @@ model FiiIndicators {
   fiiType String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([ticker, createdAt(sort: Desc)])
 }
 
 model FiiRentability {
@@ -70,7 +74,7 @@ model FiiRentability {
 model StockCagr {
   id Int @id @default(autoincrement())
   value Decimal?
-  period Int?
+  periodYears Int?
   stockRevenueIndicators StockIndicators[] @relation("revenuesCagr")
   stockProfitIndicators StockIndicators[] @relation("profitCagr")
 }
