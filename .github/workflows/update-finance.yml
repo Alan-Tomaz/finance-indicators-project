@@ -24,6 +24,9 @@ jobs:
       - name: Install Prisma Types
         run: npx prisma generate
 
+      - name: Test Code
+        run: npm run test
+
       - name: Exec script
         run: |
           npm run build

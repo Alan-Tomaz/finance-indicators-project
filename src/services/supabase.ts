@@ -1,7 +1,11 @@
 import { FII_SINONIMOUS, STOCK_SINONIMOUS } from "../constants/config.js";
 import { prisma } from "../db/client.js";
 
-export const sendDataToSupabase = async (ticketsInfo: any) => {
+/**
+ * Push the fetched indicators to the supabase database.
+ * @param {any[]} ticketsInfo - A array with the tickets info.
+ */
+export const sendDataToSupabase = async (ticketsInfo: any[]) => {
   const createdData = [];
   try {
     for (const ticketInfo of ticketsInfo) {

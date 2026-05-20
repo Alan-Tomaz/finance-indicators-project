@@ -106,7 +106,15 @@ export const calcIndicatorsFromYahooFinance = (
   /* name */
   const name = quote.price.shortName || quote.price.longName || ticket.ticker;
   /* industry */
-  const sector = `${quote.summaryProfile.sector}: ${quote.summaryProfile.industry}`;
+  let sector;
+  if (
+    quote.summaryProfile.sector ||
+    quote.summaryProfile.sector != null ||
+    quote.summaryProfile.industry ||
+    quote.summaryProfile.industry != null
+  ) {
+    sector = `${quote.summaryProfile.sector}: ${quote.summaryProfile.industry}`;
+  }
   /* price */
   const price = quote.price.regularMarketPrice;
   /* PL */
@@ -118,6 +126,9 @@ export const calcIndicatorsFromYahooFinance = (
   /* ROE */
   const roe = quote.financialData.returnOnEquity || 0;
   /* CAGR PROFIT */
+  let cagrProfit;
+  let yearsCagrProfit;
+
   const firstCagrProfit = calcCagrYahooFinance(
     fundamentalsTimeSeries,
     "netIncome",
@@ -127,16 +138,21 @@ export const calcIndicatorsFromYahooFinance = (
     "netIncome",
   )[calcCagrYahooFinance(fundamentalsTimeSeries, "netIncome").length - 1];
 
-  const yearsCagrProfit =
-    new Date(lastCagrProfit.date).getFullYear() -
-    new Date(firstCagrProfit.date).getFullYear();
+  if (firstCagrProfit && lastCagrProfit) {
+    yearsCagrProfit =
+      new Date(lastCagrProfit.date).getFullYear() -
+      new Date(firstCagrProfit.date).getFullYear();
 
-  const cagrProfit =
-    ((lastCagrProfit.netIncome / firstCagrProfit.netIncome) **
-      (1 / yearsCagrProfit) -
-      1) *
-    100;
+    cagrProfit =
+      ((lastCagrProfit.netIncome / firstCagrProfit.netIncome) **
+        (1 / yearsCagrProfit) -
+        1) *
+      100;
+  }
   /* CAGR REVENUE */
+  let cagrRevenue;
+  let yearsCagrRevenue;
+
   const firstCagrRevenue = calcCagrYahooFinance(
     fundamentalsTimeSeries,
     "totalRevenue",
@@ -146,15 +162,17 @@ export const calcIndicatorsFromYahooFinance = (
     "totalRevenue",
   )[calcCagrYahooFinance(fundamentalsTimeSeries, "totalRevenue").length - 1];
 
-  const yearsCagrRevenue =
-    new Date(lastCagrRevenue.date).getFullYear() -
-    new Date(firstCagrRevenue.date).getFullYear();
+  if (firstCagrProfit && lastCagrProfit) {
+    yearsCagrRevenue =
+      new Date(lastCagrRevenue.date).getFullYear() -
+      new Date(firstCagrRevenue.date).getFullYear();
 
-  const cagrRevenue =
-    ((lastCagrRevenue.totalRevenue / firstCagrRevenue.totalRevenue) **
-      (1 / yearsCagrRevenue) -
-      1) *
-    100;
+    cagrRevenue =
+      ((lastCagrRevenue.totalRevenue / firstCagrRevenue.totalRevenue) **
+        (1 / yearsCagrRevenue) -
+        1) *
+      100;
+  }
   /* PROFIT MARGIN */
   const profitMargin = toPercent(quote.financialData.profitMargins);
   /* ROIC */
@@ -222,7 +240,7 @@ const calcCagrYahooFinance = (fundamentalsTimeSeries: any, property: any) =>
         new Date(a.date).getTime() - new Date(b.date).getTime(),
     );
 
-const calculateROICYahooFinance = (fundamentals: any) => {
+export const calculateROICYahooFinance = (fundamentals: any) => {
   const { EBIT, taxRateForCalcs, investedCapital } = fundamentals;
 
   if (

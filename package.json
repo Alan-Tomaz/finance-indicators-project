@@ -8,7 +8,7 @@
     "start": "cross-env NODE_ENV=prod node dist/index.js",
     "build": "tsc",
     "dev": "tsx watch src/index.ts",
-    "test": "jest"
+    "test": "cross-env SUPABASE_DB_URL=postgresql://admin:12345678@localhost:5432/test npx prisma migrate deploy && node jest"
   },
   "keywords": [],
   "author": "",
@@ -22,6 +22,7 @@
     "jest": "^30.4.2",
     "prisma": "^7.8.0",
     "ts-jest": "^29.4.9",
+    "ts-jest-mock-import-meta": "^1.3.2",
     "tsx": "^4.21.0",
     "typescript": "^6.0.3"
   },
