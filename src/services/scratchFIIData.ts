@@ -1,13 +1,13 @@
 import type { ITicker } from "../models/financial.js";
-import axios from "axios";
-import * as cheerio from "cheerio";
 import { saveTextInFile } from "../utils/saveTextInFile.js";
 import { LANGUAGE, NODE_ENV } from "../constants/config.js";
 import { formatDate } from "../utils/formatDate.js";
 import type { Prisma } from "../generated/prisma/client.js";
+import { scratchDataFromSite } from "./scratchData.js";
 
 /**
  * Fetches data from the site FundsExplorer for a given ticket for a FII and calculates financial indicators based on the fetched data.
+ * FII (Fundo de Investimento Imobiliário) is a brazilian asset.
  * @param {ITicker} ticker The stocker ticker symbol to fetch data
  * @returns {Prisma.FiiIndicatorsCreateInput} - An object containing calculated financial indicators
  */
@@ -15,13 +15,7 @@ export const scratchFIIData = async (ticker: ITicker) => {
   try {
     const url = `https://www.fundsexplorer.com.br/funds/${ticker.ticker}`;
 
-    const { data } = await axios.get(url, {
-      headers: {
-        "User-Agent": "Mozilla/5.0",
-      },
-    });
-
-    const $ = cheerio.load(data);
+    const $ = await scratchDataFromSite(url);
 
     const html = $.html();
 

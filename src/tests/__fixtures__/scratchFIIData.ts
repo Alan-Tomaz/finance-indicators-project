@@ -6,11 +6,6 @@ import { formatDate } from "../../utils/formatDate.js";
 import fs from "fs";
 
 // FII MOCKS
-export const mockCheerioHtml = fs.readFileSync(
-  "./src/tests/__fixtures__/cheerioFIIFetchedHtml.html",
-  "utf-8",
-);
-
 export const mockCheerioSiteFunctionResponse = {
   assetType: "FII",
   date: formatDate(new Date(), LANGUAGE),

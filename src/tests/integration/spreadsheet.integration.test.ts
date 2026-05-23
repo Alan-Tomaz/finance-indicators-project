@@ -14,6 +14,7 @@ describe("collectDataSpreadsheet integration", () => {
       SPREAD_SHEET_ID!,
     );
 
+    assert.ok(Array.isArray(result));
     assert.notStrictEqual(result.length, 0);
   });
 });
