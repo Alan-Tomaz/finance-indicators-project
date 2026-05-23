@@ -4,7 +4,9 @@ import { scratchDataFromSite } from "../../services/scratchData.js";
 
 describe("scratchDataFromSite integration", () => {
   it("should return data from the site", async () => {
-    const result = await scratchDataFromSite("https://google.com");
+    const result = await scratchDataFromSite(
+      "https://investidor10.com.br/stocks/aapl/",
+    );
 
     assert.strictEqual(typeof result, "function");
     const html = result.html();

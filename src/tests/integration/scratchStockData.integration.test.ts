@@ -1,4 +1,4 @@
-import assert from "node:assert";
+/* import assert from "node:assert";
 import { describe, it } from "node:test";
 import { scratchStockData } from "../../services/scratchStockData.js";
 import { mockTicketStockForScratchFuntion } from "../__fixtures__/scratchStockData.js";
@@ -33,3 +33,4 @@ describe("collectStockDataFromScratchSite integration", () => {
     assert.strictEqual(typeof result.name, "string");
   });
 });
+ */

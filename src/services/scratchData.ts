@@ -1,9 +1,6 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
-import puppeteer from "puppeteer-extra";
-import StealthPlugin from "puppeteer-extra-plugin-stealth";
-
-(puppeteer as any).use(StealthPlugin());
+import puppeteer from "puppeteer";
 
 /**
  * Fetches data from the given site
@@ -61,21 +58,19 @@ const fetchWithCheerio = async (url: string) => {
 const fetchWithPuppeteer = async (url: string) => {
   let browser;
   try {
-    browser = await (puppeteer as any).launch({
+    browser = await puppeteer.launch({
       headless: true,
     });
     const page = await browser.newPage();
 
-    /*   await page.setUserAgent(
+    await page.setUserAgent(
       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
-    ); */
-
-    const reponse = await page.goto(
-      url /* {
-      waitUntil: "networkidle2",
-    } */,
     );
-    await page.waitForTimeout(5000);
+
+    const reponse = await page.goto(url, {
+      waitUntil: "networkidle2",
+    });
+
     if (!reponse?.ok()) {
       throw new Error(
         `Page failed to load with status: ${reponse?.status()} using Puppeteer for URL: ${url}`,
