@@ -14,7 +14,7 @@ export const scratchDataFromSite = async (url: string) => {
   let data;
   let $;
   try {
-    data = await fetchWithCheerio(`${url}444`);
+    data = await fetchWithCheerio(`${url}`);
   } catch (err) {
     console.warn(
       `Cheerio Fetch failed for URL: ${url}. Err: ${err}, trying with puppeteer...`,
@@ -66,14 +66,16 @@ const fetchWithPuppeteer = async (url: string) => {
     });
     const page = await browser.newPage();
 
-    await page.setUserAgent(
+    /*   await page.setUserAgent(
       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
-    );
+    ); */
 
-    const reponse = await page.goto(url, {
+    const reponse = await page.goto(
+      url /* {
       waitUntil: "networkidle2",
-    });
-
+    } */,
+    );
+    await page.waitForTimeout(5000);
     if (!reponse?.ok()) {
       throw new Error(
         `Page failed to load with status: ${reponse?.status()} using Puppeteer for URL: ${url}`,
