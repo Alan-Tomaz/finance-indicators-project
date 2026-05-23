@@ -1,12 +1,10 @@
-import { create } from "node:domain";
 import { LANGUAGE } from "../../constants/config.js";
 import type { FiiIndicatorsCreateInput } from "../../generated/prisma/models.js";
 import type { ITicker } from "../../models/financial.js";
 import { formatDate } from "../../utils/formatDate.js";
-import fs from "fs";
 
 // FII MOCKS
-export const mockCheerioSiteFunctionResponse = {
+export const mockScratchFiiData = {
   assetType: "FII",
   date: formatDate(new Date(), LANGUAGE),
   dy: 14.027,
@@ -25,7 +23,7 @@ export const mockCheerioSiteFunctionResponse = {
   rentability: { create: { value: 14.34, periodYears: 1 } },
 };
 
-export const mockCheerioSiteFunctionResponseNull = {
+export const mockScratchFiiDataNull = {
   assetType: "FII",
   date: formatDate(new Date(), LANGUAGE),
   dy: null,

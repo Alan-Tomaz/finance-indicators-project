@@ -117,9 +117,22 @@ export const calcIndicatorsFromYahooFinance = (
     sector = `${quote.summaryProfile.sector}: ${quote.summaryProfile.industry}`;
   }
   /* price */
-  const price = quote.price.regularMarketPrice;
+  let price;
+  if (
+    quote.price.regularMarketPrice != undefined &&
+    quote.price.regularMarketPrice != null
+  ) {
+    price = quote.price.regularMarketPrice;
+  }
   /* PE */
-  const pe = quote.summaryDetail.trailingPE;
+
+  let pe;
+  if (
+    quote.summaryDetail.trailingPE != undefined &&
+    quote.summaryDetail.trailingPE != null
+  ) {
+    pe = quote.summaryDetail.trailingPE;
+  }
   /* DY */
   let dy;
   if (

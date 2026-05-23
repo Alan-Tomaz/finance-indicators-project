@@ -4,10 +4,13 @@ import {
   SPREAD_SHEET_RANGES,
   STOCK_SINONIMOUS,
 } from "../constants/config.js";
+import type { StockIndicatorsCreateInput } from "../generated/prisma/models.js";
 import { scratchFIIData } from "../services/scratchFIIData.js";
+import { scratchStockData } from "../services/scratchStockData.js";
 import { getSpreadsheetTickets } from "../services/spreadsheet.js";
 import { sendDataToSupabase } from "../services/supabase.js";
 import { fetchTicketInfoFromYahooFinance } from "../services/yahooFinance.js";
+import { filterStockValues } from "../utils/stock.js";
 
 /**
  * This function is responsible for updating the financial data of the tickets listed in the spreadsheet and save in the supabase db.
@@ -30,7 +33,20 @@ export const updateFinancial = async () => {
       let ticketInfo: any = {};
       // ASSET TYPE EXPECTED = STOCK_SINONIMOUS
       if (STOCK_SINONIMOUS.includes(ticket.assetType)) {
-        ticketInfo = await fetchTicketInfoFromYahooFinance(ticket);
+        // Fetch stock data from yahoo finance
+        const stockIndicatorsFromYahooFinance =
+          await fetchTicketInfoFromYahooFinance(ticket);
+        // Fetch stock data from scratch site
+        const stockIndicatorsFromScratchSite = await scratchStockData(ticket);
+        // fetch data from both sources to compare and filter values, if some value is undefined or null, return null.
+        const finalStockIndicators: StockIndicatorsCreateInput =
+          filterStockValues(
+            stockIndicatorsFromYahooFinance,
+            stockIndicatorsFromScratchSite,
+            ticket,
+          );
+
+        ticketInfo = finalStockIndicators;
       }
       // ASSET TYPE EXPECTED = "FII"
       if (FII_SINONIMOUS.includes(ticket.assetType)) {

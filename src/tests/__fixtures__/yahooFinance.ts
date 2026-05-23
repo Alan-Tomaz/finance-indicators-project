@@ -68,7 +68,7 @@ export const mockFundamentals = [
 
 export const mockFundamentalsUndefined = [{}, {}];
 
-export const mockTicketStock: ITicker = {
+export const mockTicketStockForYahooFinance: ITicker = {
   assetType: "STOCK",
   exchange: "NASDAQ",
   ticker: "AAPL",
@@ -77,8 +77,8 @@ export const mockTicketStock: ITicker = {
 export const mockStockCreate: StockIndicatorsCreateInput = {
   date: formatDate(new Date(), LANGUAGE),
   price: 45,
-  ticker: mockTicketStock.ticker,
-  assetType: mockTicketStock.assetType,
+  ticker: mockTicketStockForYahooFinance.ticker,
+  assetType: mockTicketStockForYahooFinance.assetType,
   cagrProfit: {
     create: {
       periodYears: 3,
@@ -95,7 +95,7 @@ export const mockStockCreate: StockIndicatorsCreateInput = {
   evEbit: 3,
   grossDebtNetWorth: 1.97,
   liquidity: 35456,
-  name: mockTicketStock.ticker,
+  name: mockTicketStockForYahooFinance.ticker,
   pe: 3.5,
   pbv: 3.2,
   roe: 10,

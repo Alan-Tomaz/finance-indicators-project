@@ -19,7 +19,7 @@ model StockIndicators {
   date String
   name String?
   sector String?
-  price Decimal
+  price Decimal?
   pe Decimal?
   pbv Decimal?
   dy Decimal?

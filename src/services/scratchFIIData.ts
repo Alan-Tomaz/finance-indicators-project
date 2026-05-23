@@ -27,7 +27,7 @@ export const scratchFIIData = async (ticker: ITicker) => {
       calculateFIIIndicators(html, ticker);
 
     console.log(
-      `Info for ticket ${ticker.ticker} fetched successfully Funds Explorer.`,
+      `Info for ticket ${ticker.ticker} fetched successfully from Funds Explorer.`,
     );
     return fiiIndicators;
   } catch (error) {

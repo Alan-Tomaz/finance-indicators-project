@@ -3,20 +3,20 @@ import { LANGUAGE } from "../../constants/config.js";
 import assert from "node:assert";
 import { calculateFIIIndicators } from "../../services/scratchFIIData.js";
 import {
-  mockCheerioSiteFunctionResponse,
+  mockScratchFiiData,
   mockTicketFii,
 } from "../__fixtures__/scratchFIIData.js";
-import { mockCheerioHtml } from "../__fixtures__/cheerioFiiFetchedHtml.js";
+import { mockCheerioFiiHtml } from "../__fixtures__/cheerioFetchedHtml.js";
 
 describe("calculateIndicatorsFii units", () => {
   it("should calculate indicators correctly", () => {
-    const result = calculateFIIIndicators(mockCheerioHtml, mockTicketFii);
+    const result = calculateFIIIndicators(mockCheerioFiiHtml, mockTicketFii);
 
-    assert.deepStrictEqual(result, mockCheerioSiteFunctionResponse);
+    assert.deepStrictEqual(result, mockScratchFiiData);
   });
 
   it("should treat undefined values", () => {
-    const unmatchedHtml = mockCheerioHtml.replace(
+    const unmatchedHtml = mockCheerioFiiHtml.replace(
       /var dataLayer_content = ({.*?});/s,
       "",
     );

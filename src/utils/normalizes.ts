@@ -46,12 +46,19 @@ export function toPercent(value: number) {
 }
 
 export function parseBrazilianNumber(value: string): number {
-  return Number(
-    value
-      .replace(/\./g, "")
-      .replace(",", ".")
-      .replace("%", "")
-      .replace("R$", "")
-      .trim(),
-  );
+  const number = value
+    .replace(/\./g, "")
+    .replace(",", ".")
+    .replace("%", "")
+    .replace("-", "")
+    .replace("R$", "")
+    .trim();
+
+  if (number === "") {
+    return NaN;
+  }
+
+  const numberFiltered = Number(number);
+
+  return numberFiltered;
 }

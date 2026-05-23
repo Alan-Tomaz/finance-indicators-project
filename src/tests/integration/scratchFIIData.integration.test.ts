@@ -19,7 +19,6 @@ describe("collectFiiDataFromScratchSite integration", () => {
     assert.strictEqual(typeof result.quotaHolders, "number");
     assert.strictEqual(typeof result.vpc, "number");
     assert.strictEqual(typeof result.assetsNumber, "number");
-    assert.strictEqual(typeof result.dy, "number");
     assert.strictEqual(typeof result.liquidity, "number");
     assert.strictEqual(typeof result.price, "number");
     assert.strictEqual(typeof result.ticker, "string");

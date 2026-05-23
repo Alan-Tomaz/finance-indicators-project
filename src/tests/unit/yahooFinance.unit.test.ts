@@ -11,7 +11,7 @@ import {
   mockFundamentalsUndefined,
   mockQuote,
   mockQuoteUndefined,
-  mockTicketStock,
+  mockTicketStockForYahooFinance,
   mockYahooFinanceFunctionResponse,
   mockYahooFinanceFunctionResponseNull,
 } from "../__fixtures__/yahooFinance.js";
@@ -22,7 +22,7 @@ describe("collectStockDataFromYahooFinance units", () => {
     const result = calcIndicatorsFromYahooFinance(
       mockQuote,
       mockFundamentals,
-      mockTicketStock,
+      mockTicketStockForYahooFinance,
     );
 
     assert.deepStrictEqual(result, mockYahooFinanceFunctionResponse);
@@ -32,14 +32,18 @@ describe("collectStockDataFromYahooFinance units", () => {
     const result = calcIndicatorsFromYahooFinance(
       mockQuoteUndefined,
       mockFundamentalsUndefined,
-      mockTicketStock,
+      mockTicketStockForYahooFinance,
     );
 
     assert.deepStrictEqual(result, mockYahooFinanceFunctionResponseNull);
   });
 
   it("should return empty object if quote is missing", () => {
-    const result = calcIndicatorsFromYahooFinance(null, [], mockTicketStock);
+    const result = calcIndicatorsFromYahooFinance(
+      null,
+      [],
+      mockTicketStockForYahooFinance,
+    );
 
     assert.deepStrictEqual(result, {});
   });
@@ -48,7 +52,7 @@ describe("collectStockDataFromYahooFinance units", () => {
     const result = calcIndicatorsFromYahooFinance(
       mockQuote,
       [],
-      mockTicketStock,
+      mockTicketStockForYahooFinance,
     );
 
     assert.deepStrictEqual(result, {});

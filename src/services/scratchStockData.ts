@@ -4,6 +4,8 @@ import { LANGUAGE, NODE_ENV } from "../constants/config.js";
 import { formatDate } from "../utils/formatDate.js";
 import type { Prisma } from "../generated/prisma/client.js";
 import { scratchDataFromSite } from "./scratchData.js";
+import { parseBrazilianNumber } from "../utils/normalizes.js";
+import * as cheerio from "cheerio";
 
 /**
  * Fetches data from the site StatusInvest for a given ticket for a stock and calculates financial indicators based on the fetched data.
@@ -20,25 +22,25 @@ export const scratchStockData = async (ticker: ITicker) => {
           : ticker.assetType === "AÇÃO"
             ? "acoes"
             : ticker.assetType.includes("ETF")
-              ? "etf"
+              ? "etfs"
               : "",
     };
 
-    const url = `https://https://statusinvest.com.br/${filters.isEua ? "eua" : ""}/${filters.assetType}`;
+    const url = `https://statusinvest.com.br/${filters.assetType}/${filters.isEua ? "eua/" : ""}${ticker.ticker}`;
 
     const $ = await scratchDataFromSite(url);
 
     const html = $.html();
-
+    /* 
     if (NODE_ENV === "dev") {
       saveTextInFile(html);
-    }
+    } */
 
     const stockIndicators: Prisma.StockIndicatorsCreateInput =
-      calculateStockIndicatorsFromScratch($, html, ticker);
+      calculateStockIndicatorsFromScratch(html, ticker);
 
     console.log(
-      `Info for ticket ${ticker.ticker} fetched successfully StatusInvest.`,
+      `Info for ticket ${ticker.ticker} fetched successfully from StatusInvest.`,
     );
     return stockIndicators;
   } catch (error) {
@@ -51,168 +53,201 @@ export const scratchStockData = async (ticker: ITicker) => {
 // CALC ALL FINANCIAL INDICATORS
 // Return values as null if undefined or null
 export const calculateStockIndicatorsFromScratch = (
-  pageObj: any,
   html: any,
   ticket: ITicker,
 ): Prisma.StockIndicatorsCreateInput => {
-  if (!pageObj) {
+  const $ = cheerio.load(html);
+
+  if (!$) {
     console.error("Quote or fundamentalsTimeSeries data is missing.");
     return {} as Prisma.StockIndicatorsCreateInput;
   }
 
   /* name */
+  const newName = $(".d-block.fw-600.text-main-green-dark").text().trim();
+  const name = newName || ticket.ticker;
 
-  const name = pageObj(".$('.d-block.fw-600.text-main-green-dark')")
-    .text()
-    .trim();
-  /* industry */
+  // sector
   let sector;
-  if (
-    quote.summaryProfile.sector != undefined ||
-    quote.summaryProfile.sector != null ||
-    quote.summaryProfile.industry != undefined ||
-    quote.summaryProfile.industry != null
-  ) {
-    sector = `${quote.summaryProfile.sector}: ${quote.summaryProfile.industry}`;
-  }
-  /* price */
-  const price = quote.price.regularMarketPrice;
-  /* PE */
-  const pe = quote.summaryDetail.trailingPE;
-  /* DY */
-  let dy;
-  if (
-    quote.summaryDetail.dividendYield != undefined &&
-    quote.summaryDetail.dividendYield != null
-  ) {
-    dy = toPercent(quote.summaryDetail.dividendYield);
-  }
-  /* P/BV */
-  const pbv = quote.defaultKeyStatistics.priceToBook;
-  /* ROE */
-  let roe;
-  if (
-    quote.financialData.returnOnEquity != undefined &&
-    quote.financialData.returnOnEquity != null
-  ) {
-    roe = toPercent(quote.financialData.returnOnEquity);
-  }
-  /* CAGR PROFIT */
-  let cagrProfit;
-  let yearsCagrProfit;
+  let newSector: any;
+  let subSector: any;
+  let englishSector: any;
+  let englishSubSector: any;
+  let netWorth: any;
+  let grossDebt: any;
+  $(".info").each((_: any, element: any) => {
+    const title = $(element).find("span.sub-value").text().trim();
+    const value = $(element).find("strong.value").text().trim();
 
-  const firstCagrProfit = calcCagrYahooFinance(
-    fundamentalsTimeSeries,
-    "netIncome",
-  )[0];
-  const lastCagrProfit = calcCagrYahooFinance(
-    fundamentalsTimeSeries,
-    "netIncome",
-  )[calcCagrYahooFinance(fundamentalsTimeSeries, "netIncome").length - 1];
+    // sector
+    if (/(?<!Sub)Setor de Atuação/gi.test(title)) {
+      newSector = value;
+    }
 
-  if (
-    firstCagrProfit != undefined &&
-    firstCagrProfit != null &&
-    lastCagrProfit != undefined &&
-    lastCagrProfit != null
-  ) {
-    yearsCagrProfit =
-      new Date(lastCagrProfit.date).getFullYear() -
-      new Date(firstCagrProfit.date).getFullYear();
+    if (/Subsetor de Atuação/gi.test(title)) {
+      subSector = value;
+    }
 
-    cagrProfit =
-      ((lastCagrProfit.netIncome / firstCagrProfit.netIncome) **
-        (1 / yearsCagrProfit) -
-        1) *
-      100;
+    if (/SETOR/gi.test(title)) {
+      englishSector = value;
+    }
+
+    if (/INDÚSTRIA/gi.test(title)) {
+      englishSubSector = value;
+    }
+  });
+  /* sector */
+  if (newSector && subSector) {
+    sector = `${newSector}: ${subSector}`;
   }
-  /* CAGR REVENUE */
-  let cagrRevenue;
-  let yearsCagrRevenue;
 
-  const firstCagrRevenue = calcCagrYahooFinance(
-    fundamentalsTimeSeries,
-    "totalRevenue",
-  )[0];
-  const lastCagrRevenue = calcCagrYahooFinance(
-    fundamentalsTimeSeries,
-    "totalRevenue",
-  )[calcCagrYahooFinance(fundamentalsTimeSeries, "totalRevenue").length - 1];
-
-  if (
-    firstCagrRevenue != undefined &&
-    firstCagrRevenue != null &&
-    lastCagrRevenue != undefined &&
-    lastCagrRevenue != null
-  ) {
-    yearsCagrRevenue =
-      new Date(lastCagrRevenue.date).getFullYear() -
-      new Date(firstCagrRevenue.date).getFullYear();
-
-    cagrRevenue =
-      ((lastCagrRevenue.totalRevenue / firstCagrRevenue.totalRevenue) **
-        (1 / yearsCagrRevenue) -
-        1) *
-      100;
+  if (englishSector && englishSubSector && ticket.exchange != "BVMF") {
+    sector = `${englishSector}: ${englishSubSector}`;
   }
-  /* PROFIT MARGIN */
-  let profitMargin;
-  if (
-    quote.financialData.profitMargins != undefined &&
-    quote.financialData.profitMargins != null
-  ) {
-    profitMargin = toPercent(quote.financialData.profitMargins);
-  }
-  /* ROIC */
-  const roic = calculateROICYahooFinance(
-    fundamentalsTimeSeries[fundamentalsTimeSeries.length - 1],
-  );
   /* liquidity */
-  const liquidity = quote.summaryDetail.averageVolume;
-  /* ev/ebit */
-  let evEbit;
-  if (
-    quote.defaultKeyStatistics.enterpriseValue != undefined &&
-    quote.defaultKeyStatistics.enterpriseValue != null &&
-    fundamentalsTimeSeries[fundamentalsTimeSeries.length - 1].EBIT !=
-      undefined &&
-    fundamentalsTimeSeries[fundamentalsTimeSeries.length - 1].EBIT != null
-  ) {
-    evEbit =
-      quote.defaultKeyStatistics.enterpriseValue /
-      fundamentalsTimeSeries[fundamentalsTimeSeries.length - 1].EBIT;
-  }
-  /* netDebtEbitda  */
-  let netDebtEbitda;
-  if (
-    fundamentalsTimeSeries[fundamentalsTimeSeries.length - 1].netDebt !=
-      undefined &&
-    fundamentalsTimeSeries[fundamentalsTimeSeries.length - 1].netDebt != null &&
-    fundamentalsTimeSeries[fundamentalsTimeSeries.length - 1].EBITDA !=
-      undefined &&
-    fundamentalsTimeSeries[fundamentalsTimeSeries.length - 1].EBITDA != null
-  ) {
-    netDebtEbitda =
-      fundamentalsTimeSeries[fundamentalsTimeSeries.length - 1].netDebt /
-      fundamentalsTimeSeries[fundamentalsTimeSeries.length - 1].EBITDA;
-  }
+  let liquidity;
+
+  $("div").each((_: any, element: any) => {
+    const text = $(element).text();
+    const value = $(element).find("strong.value").first().text().trim();
+
+    if (
+      /Liquidez média diária/gi.test(text) ||
+      /Liq. méd. diária/gi.test(text)
+    ) {
+      if (!isNaN(parseBrazilianNumber(value))) {
+        liquidity = parseBrazilianNumber(value);
+      }
+    }
+  });
+  /* price */
+  let price;
   /* grossDebtNetWorth */
   let debtToEquityPercent;
-  if (
-    fundamentalsTimeSeries[fundamentalsTimeSeries.length - 1].totalDebt !=
-      undefined &&
-    fundamentalsTimeSeries[fundamentalsTimeSeries.length - 1].totalDebt !=
-      null &&
-    fundamentalsTimeSeries[fundamentalsTimeSeries.length - 1]
-      .stockholdersEquity != undefined &&
-    fundamentalsTimeSeries[fundamentalsTimeSeries.length - 1]
-      .stockholdersEquity != null
-  ) {
-    debtToEquityPercent =
-      fundamentalsTimeSeries[fundamentalsTimeSeries.length - 1].totalDebt /
-      fundamentalsTimeSeries[fundamentalsTimeSeries.length - 1]
-        .stockholdersEquity;
+  $(".info").each((_: any, element: any) => {
+    const title = $(element).find("h3.title").text().trim();
+    const value = $(element).find("strong.value").text().trim();
+    // price
+    if (/Valor atual/gi.test(title)) {
+      if (!isNaN(parseBrazilianNumber(value))) {
+        price = parseBrazilianNumber(value);
+      }
+    }
+
+    // grossDebtNetWorth
+    if (/Patrimônio líquido/gi.test(title)) {
+      if (!isNaN(parseBrazilianNumber(value))) {
+        netWorth = parseBrazilianNumber(value);
+      }
+    }
+
+    if (/Dívida bruta/gi.test(title)) {
+      if (!isNaN(parseBrazilianNumber(value))) {
+        grossDebt = parseBrazilianNumber(value);
+      }
+    }
+  });
+  /* grossDebtNetWorth */
+  if (netWorth && grossDebt) {
+    debtToEquityPercent = grossDebt / netWorth;
   }
+
+  /* DY */
+  let dy;
+  /* PE */
+  let pe;
+  /* P/BV */
+  let pbv;
+  /* ROE */
+  let roe;
+  /* CAGR PROFIT */
+  let cagrProfit;
+  const yearsCagrProfit = 5;
+  /* CAGR REVENUE */
+  let cagrRevenue;
+  const yearsCagrRevenue = 5;
+  /* PROFIT MARGIN */
+  let profitMargin;
+  /* ROIC */
+  let roic;
+  /* ev/ebit */
+  let evEbit;
+  /* netDebtEbitda  */
+  let netDebtEbitda;
+  $(".item").each((_: any, element: any) => {
+    const title = $(element).find("h3.title").text().trim();
+    const value = $(element).find("strong.value").text().trim();
+
+    // D.Y
+    if (/D\.Y/gi.test(title)) {
+      if (!isNaN(parseBrazilianNumber(value))) {
+        dy = parseBrazilianNumber(value);
+      }
+    }
+    // pe
+    if (/P\/L/gi.test(title)) {
+      if (!isNaN(parseBrazilianNumber(value))) {
+        pe = parseBrazilianNumber(value);
+      }
+    }
+
+    // pbv
+    if (/P\/VP/gi.test(title)) {
+      if (!isNaN(parseBrazilianNumber(value))) {
+        pbv = parseBrazilianNumber(value);
+      }
+    }
+
+    // roe
+    if (/ROE/gi.test(title)) {
+      if (!isNaN(parseBrazilianNumber(value))) {
+        roe = parseBrazilianNumber(value);
+      }
+    }
+
+    // ev/ebit
+    if (/EV\/EBIT/gi.test(title)) {
+      if (!isNaN(parseBrazilianNumber(value))) {
+        evEbit = parseBrazilianNumber(value);
+      }
+    }
+
+    // roe
+    if (/ROIC/gi.test(title)) {
+      if (!isNaN(parseBrazilianNumber(value))) {
+        roic = parseBrazilianNumber(value);
+      }
+    }
+
+    // cagr profit
+    if (/CAGR Receitas 5 anos/gi.test(title)) {
+      if (!isNaN(parseBrazilianNumber(value))) {
+        cagrProfit = parseBrazilianNumber(value);
+      }
+    }
+
+    // cagr revenue
+    if (/CAGR Lucros 5 anos/gi.test(title)) {
+      if (!isNaN(parseBrazilianNumber(value))) {
+        cagrRevenue = parseBrazilianNumber(value);
+      }
+    }
+
+    // profit margin
+    if (/M\. Líquida/gi.test(title)) {
+      if (!isNaN(parseBrazilianNumber(value))) {
+        profitMargin = parseBrazilianNumber(value);
+      }
+    }
+
+    // netDebtEbitda
+    if (/Dív\. líquida\/EBITDA/gi.test(title)) {
+      if (!isNaN(parseBrazilianNumber(value))) {
+        netDebtEbitda = parseBrazilianNumber(value);
+      }
+    }
+  });
+
   /* ===== STOCK INDICATORS ===== */
   const ticketInfo: Prisma.StockIndicatorsCreateInput = {
     assetType: ticket.assetType,
@@ -245,5 +280,6 @@ export const calculateStockIndicatorsFromScratch = (
       },
     },
   };
+
   return ticketInfo;
 };
