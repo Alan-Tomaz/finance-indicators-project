@@ -25,7 +25,7 @@ jobs:
       LANGUAGE: ${{ secrets.LANGUAGE }}
 
     steps:
-      - name: Checkout off code
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Install Node.js
@@ -36,10 +36,10 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Install Prisma Types
+      - name: Generate Prisma Client
         run: npx prisma generate
 
-      - name: Install PostgreDB for Tests
+      - name: Start PostgreSQL container for tests
         run: docker compose -f docker-compose.test.yml up -d
 
       - name: Wait for PostgreSQL
@@ -52,7 +52,7 @@ jobs:
       - name: Test Code
         run: npm run test
 
-      - name: Exec script
+      - name: Run update script
         run: |
           npm run build
           npm run start

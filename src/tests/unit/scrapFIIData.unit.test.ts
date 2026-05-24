@@ -1,18 +1,18 @@
 import { describe, it } from "node:test";
 import { LANGUAGE } from "../../constants/config.js";
 import assert from "node:assert";
-import { calculateFIIIndicators } from "../../services/scratchFIIData.js";
+import { calculateFIIIndicators } from "../../services/scrapFIIData.js";
 import {
   mockCheerioFiiHtml,
-  mockScratchFiiData,
+  mockScrapFiiData,
   mockTicketFii,
-} from "../__fixtures__/scratchFIIData.js";
+} from "../__fixtures__/scrapFIIData.js";
 
 describe("calculateIndicatorsFii units", () => {
   it("should calculate indicators correctly", () => {
     const result = calculateFIIIndicators(mockCheerioFiiHtml, mockTicketFii);
 
-    assert.deepStrictEqual(result, mockScratchFiiData);
+    assert.deepStrictEqual(result, mockScrapFiiData);
   });
 
   it("should treat undefined values", () => {

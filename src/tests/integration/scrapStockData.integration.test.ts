@@ -1,11 +1,11 @@
 import assert from "node:assert";
 import { describe, it } from "node:test";
-import { scratchStockData } from "../../services/scratchStockData.js";
-import { mockTicketStockForScratchFuntion } from "../__fixtures__/scratchStockData.js";
+import { scrapStockData } from "../../services/scrapStockData.js";
+import { mockTicketStockForScrapFuntion } from "../__fixtures__/scrapStockData.js";
 
-describe("collectStockDataFromScratchSite integration", () => {
+describe("collectStockDataFromScrapSite integration", () => {
   it("should return the indicators from a stock ticker", async () => {
-    const result = await scratchStockData(mockTicketStockForScratchFuntion);
+    const result = await scrapStockData(mockTicketStockForScrapFuntion);
 
     assert.strictEqual(typeof result.price, "number");
     assert.strictEqual(typeof result.cagrProfit?.create?.value, "number");

@@ -5,8 +5,8 @@ import {
   STOCK_SINONIMOUS,
 } from "../constants/config.js";
 import type { StockIndicatorsCreateInput } from "../generated/prisma/models.js";
-import { scratchFIIData } from "../services/scratchFIIData.js";
-import { scratchStockData } from "../services/scratchStockData.js";
+import { scrapFIIData } from "../services/scrapFIIData.js";
+import { scrapStockData } from "../services/scrapStockData.js";
 import { getSpreadsheetTickets } from "../services/spreadsheet.js";
 import { sendDataToSupabase } from "../services/supabase.js";
 import { fetchTicketInfoFromYahooFinance } from "../services/yahooFinance.js";
@@ -36,13 +36,13 @@ export const updateFinancial = async () => {
         // Fetch stock data from yahoo finance
         const stockIndicatorsFromYahooFinance =
           await fetchTicketInfoFromYahooFinance(ticket);
-        // Fetch stock data from scratch site
-        const stockIndicatorsFromScratchSite = await scratchStockData(ticket);
+        // Fetch stock data from scrap site
+        const stockIndicatorsFromScrapSite = await scrapStockData(ticket);
         // fetch data from both sources to compare and filter values, if some value is undefined or null, return null.
         const finalStockIndicators: StockIndicatorsCreateInput =
           filterStockValues(
             stockIndicatorsFromYahooFinance,
-            stockIndicatorsFromScratchSite,
+            stockIndicatorsFromScrapSite,
             ticket,
           );
 
@@ -50,7 +50,7 @@ export const updateFinancial = async () => {
       }
       // ASSET TYPE EXPECTED = "FII"
       if (FII_SINONIMOUS.includes(ticket.assetType)) {
-        ticketInfo = await scratchFIIData(ticket);
+        ticketInfo = await scrapFIIData(ticket);
       }
       if (ticketInfo.hasOwnProperty("assetType")) {
         ticketsInfo.push(ticketInfo);

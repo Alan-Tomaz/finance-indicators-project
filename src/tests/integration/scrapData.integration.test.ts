@@ -1,10 +1,10 @@
 import assert from "node:assert";
 import { describe, it } from "node:test";
-import { scratchDataFromSite } from "../../services/scratchData.js";
+import { scrapDataFromSite } from "../../services/scrapData.js";
 
-describe("scratchDataFromSite integration", () => {
+describe("scrapDataFromSite integration", () => {
   it("should return data from the site", async () => {
-    const result = await scratchDataFromSite(
+    const result = await scrapDataFromSite(
       "https://investidor10.com.br/stocks/aapl/",
     );
 

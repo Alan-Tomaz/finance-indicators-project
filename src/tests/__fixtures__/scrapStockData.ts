@@ -11,7 +11,7 @@ const altHtmlPath = path.join(__dirname, "mockCheerioStockAltData.txt");
 export const mockCheerioStockHtml = fs.readFileSync(htmlPath, "utf-8");
 export const mockCheerioStockAltHtml = fs.readFileSync(altHtmlPath, "utf-8");
 
-export const mockScratchStockData: StockIndicatorsCreateInput = {
+export const mockScrapStockData: StockIndicatorsCreateInput = {
   assetType: "AÇÃO",
   ticker: "CMIG4",
   date: formatDate(new Date(), LANGUAGE),
@@ -32,13 +32,13 @@ export const mockScratchStockData: StockIndicatorsCreateInput = {
   cagrRevenue: { create: { value: 11.33, periodYears: 5 } },
 };
 
-export const mockTicketStockForScratchFuntion: ITicker = {
+export const mockTicketStockForScrapFuntion: ITicker = {
   assetType: "AÇÃO",
   exchange: "BVMF",
   ticker: "CMIG4",
 };
 
-export const mockScratchStockUsData = {
+export const mockScrapStockUsData = {
   assetType: "STOCK",
   ticker: "AAPL",
   date: formatDate(new Date(), LANGUAGE),

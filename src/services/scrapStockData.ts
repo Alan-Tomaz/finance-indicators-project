@@ -3,7 +3,7 @@ import { saveTextInFile } from "../utils/saveTextInFile.js";
 import { LANGUAGE, NODE_ENV } from "../constants/config.js";
 import { formatDate } from "../utils/formatDate.js";
 import type { Prisma } from "../generated/prisma/client.js";
-import { scratchDataFromSite } from "./scratchData.js";
+import { scrapDataFromSite } from "./scrapData.js";
 import { parseToNumber } from "../utils/normalizes.js";
 import * as cheerio from "cheerio";
 
@@ -12,7 +12,7 @@ import * as cheerio from "cheerio";
  * @param {ITicker} ticker The stocker ticker symbol to fetch data
  * @returns {Prisma.StockIndicatorsCreateInput} - An object containing calculated financial indicators
  */
-export const scratchStockData = async (ticker: ITicker) => {
+export const scrapStockData = async (ticker: ITicker) => {
   try {
     //filers for the statusinvest site
     /* const filters = {
@@ -42,7 +42,7 @@ export const scratchStockData = async (ticker: ITicker) => {
 
     const url = `https://investidor10.com.br/${filters.assetType}/${ticker.ticker}`;
 
-    const $ = await scratchDataFromSite(url);
+    const $ = await scrapDataFromSite(url);
 
     const html = $.html();
     //
@@ -51,7 +51,7 @@ export const scratchStockData = async (ticker: ITicker) => {
     } */
 
     const stockIndicators: Prisma.StockIndicatorsCreateInput =
-      calculateStockIndicatorsFromScratch(html, ticker);
+      calculateStockIndicatorsFromScrap(html, ticker);
 
     console.log(
       `Info for ticket ${ticker.ticker} fetched successfully from Investidor10.`,
@@ -66,7 +66,7 @@ export const scratchStockData = async (ticker: ITicker) => {
 
 // CALC ALL FINANCIAL INDICATORS
 // Return values as null if undefined or null
-export const calculateStockIndicatorsFromScratch = (
+export const calculateStockIndicatorsFromScrap = (
   html: any,
   ticket: ITicker,
 ): Prisma.StockIndicatorsCreateInput => {
@@ -363,7 +363,7 @@ export const calculateStockIndicatorsFromScratch = (
 };
 
 // Example in the statusinvest site: https://statusinvest.com.br/acoes/b3sa3
-/* export const calculateStockIndicatorsFromScratch = (
+/* export const calculateStockIndicatorsFromScrap = (
   html: any,
   ticket: ITicker,
 ): Prisma.StockIndicatorsCreateInput => {

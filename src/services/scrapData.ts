@@ -7,7 +7,7 @@ import puppeteer from "puppeteer";
  * @param {string} url The url of the site to scrach
  * @returns {$} - An object of cheerio
  */
-export const scratchDataFromSite = async (url: string) => {
+export const scrapDataFromSite = async (url: string) => {
   let data;
   let $;
   try {

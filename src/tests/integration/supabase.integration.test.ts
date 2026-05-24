@@ -2,9 +2,9 @@ import { after, before, describe, it } from "node:test";
 import { prisma } from "../../db/client.js";
 import assert from "node:assert";
 import { mockStockCreate } from "../__fixtures__/yahooFinance.js";
-import { mockFiiCreate } from "../__fixtures__/scratchFIIData.js";
+import { mockFiiCreate } from "../__fixtures__/scrapFIIData.js";
 
-describe("supbaseStockIndicators integration", () => {
+describe("supabaseStockIndicators integration", () => {
   before(async () => {
     await prisma.stockIndicators.deleteMany();
     await prisma.stockCagr.deleteMany();

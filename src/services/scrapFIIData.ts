@@ -3,7 +3,7 @@ import { saveTextInFile } from "../utils/saveTextInFile.js";
 import { LANGUAGE, NODE_ENV } from "../constants/config.js";
 import { formatDate } from "../utils/formatDate.js";
 import type { Prisma } from "../generated/prisma/client.js";
-import { scratchDataFromSite } from "./scratchData.js";
+import { scrapDataFromSite } from "./scrapData.js";
 
 /**
  * Fetches data from the site FundsExplorer for a given ticket for a FII and calculates financial indicators based on the fetched data.
@@ -11,11 +11,11 @@ import { scratchDataFromSite } from "./scratchData.js";
  * @param {ITicker} ticker The stocker ticker symbol to fetch data
  * @returns {Prisma.FiiIndicatorsCreateInput} - An object containing calculated financial indicators
  */
-export const scratchFIIData = async (ticker: ITicker) => {
+export const scrapFIIData = async (ticker: ITicker) => {
   try {
     const url = `https://www.fundsexplorer.com.br/funds/${ticker.ticker}`;
 
-    const $ = await scratchDataFromSite(url);
+    const $ = await scrapDataFromSite(url);
 
     const html = $.html();
 

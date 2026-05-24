@@ -4,41 +4,41 @@ import type { ITicker } from "../models/financial.js";
 
 export const filterStockValues = (
   yahooFinanceIndicators: StockIndicatorsCreateInput,
-  scratchFromSiteIndicators: StockIndicatorsCreateInput,
+  scrapFromSiteIndicators: StockIndicatorsCreateInput,
   ticker: ITicker,
 ): StockIndicatorsCreateInput => {
   const stockIndicators: StockIndicatorsCreateInput = {
-    date: yahooFinanceIndicators.date ?? scratchFromSiteIndicators.date ?? null,
+    date: yahooFinanceIndicators.date ?? scrapFromSiteIndicators.date ?? null,
     ticker:
-      yahooFinanceIndicators.ticker ?? scratchFromSiteIndicators.ticker ?? null,
+      yahooFinanceIndicators.ticker ?? scrapFromSiteIndicators.ticker ?? null,
     assetType:
       yahooFinanceIndicators.assetType ??
-      scratchFromSiteIndicators.assetType ??
+      scrapFromSiteIndicators.assetType ??
       null,
-    name: yahooFinanceIndicators.name ?? scratchFromSiteIndicators.name ?? null,
+    name: yahooFinanceIndicators.name ?? scrapFromSiteIndicators.name ?? null,
     sector:
-      yahooFinanceIndicators.sector ?? scratchFromSiteIndicators.sector ?? null,
+      yahooFinanceIndicators.sector ?? scrapFromSiteIndicators.sector ?? null,
     price:
-      yahooFinanceIndicators.price ?? scratchFromSiteIndicators.price ?? null,
-    pe: yahooFinanceIndicators.pe ?? scratchFromSiteIndicators.pe ?? null,
-    pbv: yahooFinanceIndicators.pbv ?? scratchFromSiteIndicators.pbv ?? null,
-    dy: yahooFinanceIndicators.dy ?? scratchFromSiteIndicators.dy ?? null,
-    roe: yahooFinanceIndicators.roe ?? scratchFromSiteIndicators.roe ?? null,
+      yahooFinanceIndicators.price ?? scrapFromSiteIndicators.price ?? null,
+    pe: yahooFinanceIndicators.pe ?? scrapFromSiteIndicators.pe ?? null,
+    pbv: yahooFinanceIndicators.pbv ?? scrapFromSiteIndicators.pbv ?? null,
+    dy: yahooFinanceIndicators.dy ?? scrapFromSiteIndicators.dy ?? null,
+    roe: yahooFinanceIndicators.roe ?? scrapFromSiteIndicators.roe ?? null,
     profitMargin:
       yahooFinanceIndicators.profitMargin ??
-      scratchFromSiteIndicators.profitMargin ??
+      scrapFromSiteIndicators.profitMargin ??
       null,
     evEbit:
-      yahooFinanceIndicators.evEbit ?? scratchFromSiteIndicators.evEbit ?? null,
-    roic: yahooFinanceIndicators.roic ?? scratchFromSiteIndicators.roic ?? null,
+      yahooFinanceIndicators.evEbit ?? scrapFromSiteIndicators.evEbit ?? null,
+    roic: yahooFinanceIndicators.roic ?? scrapFromSiteIndicators.roic ?? null,
     cagrProfit: {
       create: {
         value:
-          scratchFromSiteIndicators.cagrProfit?.create?.value ??
+          scrapFromSiteIndicators.cagrProfit?.create?.value ??
           yahooFinanceIndicators.cagrProfit?.create?.value ??
           null,
         periodYears:
-          scratchFromSiteIndicators.cagrProfit?.create?.periodYears ??
+          scrapFromSiteIndicators.cagrProfit?.create?.periodYears ??
           yahooFinanceIndicators.cagrProfit?.create?.periodYears ??
           null,
       },
@@ -47,34 +47,34 @@ export const filterStockValues = (
     cagrRevenue: {
       create: {
         value:
-          scratchFromSiteIndicators.cagrRevenue?.create?.value ??
+          scrapFromSiteIndicators.cagrRevenue?.create?.value ??
           yahooFinanceIndicators.cagrRevenue?.create?.value ??
           null,
         periodYears:
-          scratchFromSiteIndicators.cagrRevenue?.create?.periodYears ??
+          scrapFromSiteIndicators.cagrRevenue?.create?.periodYears ??
           yahooFinanceIndicators.cagrRevenue?.create?.periodYears ??
           null,
       },
     },
     liquidity:
       yahooFinanceIndicators.liquidity ??
-      scratchFromSiteIndicators.liquidity ??
+      scrapFromSiteIndicators.liquidity ??
       null,
     grossDebtNetWorth:
       yahooFinanceIndicators.grossDebtNetWorth ??
-      scratchFromSiteIndicators.grossDebtNetWorth ??
+      scrapFromSiteIndicators.grossDebtNetWorth ??
       null,
     netDebtDivideByEBITDA:
       yahooFinanceIndicators.netDebtDivideByEBITDA ??
-      scratchFromSiteIndicators.netDebtDivideByEBITDA ??
+      scrapFromSiteIndicators.netDebtDivideByEBITDA ??
       null,
   };
 
-  if (scratchFromSiteIndicators.cagrProfit?.create?.value != null) {
+  if (scrapFromSiteIndicators.cagrProfit?.create?.value != null) {
     stockIndicators.cagrProfit!.create!.value =
-      scratchFromSiteIndicators.cagrProfit?.create?.value;
+      scrapFromSiteIndicators.cagrProfit?.create?.value;
     stockIndicators.cagrProfit!.create!.periodYears =
-      scratchFromSiteIndicators.cagrProfit?.create?.periodYears;
+      scrapFromSiteIndicators.cagrProfit?.create?.periodYears;
   } else if (yahooFinanceIndicators.cagrProfit?.create?.value != null) {
     stockIndicators.cagrProfit!.create!.periodYears =
       yahooFinanceIndicators.cagrProfit?.create?.periodYears;
@@ -85,11 +85,11 @@ export const filterStockValues = (
     stockIndicators.cagrProfit!.create!.periodYears = null;
   }
 
-  if (scratchFromSiteIndicators.cagrRevenue?.create?.value != null) {
+  if (scrapFromSiteIndicators.cagrRevenue?.create?.value != null) {
     stockIndicators.cagrRevenue!.create!.value =
-      scratchFromSiteIndicators.cagrRevenue?.create?.value;
+      scrapFromSiteIndicators.cagrRevenue?.create?.value;
     stockIndicators.cagrRevenue!.create!.periodYears =
-      scratchFromSiteIndicators.cagrRevenue?.create?.periodYears;
+      scrapFromSiteIndicators.cagrRevenue?.create?.periodYears;
   } else if (yahooFinanceIndicators.cagrRevenue?.create?.value != null) {
     stockIndicators.cagrRevenue!.create!.value =
       yahooFinanceIndicators.cagrRevenue?.create?.value;
@@ -102,55 +102,55 @@ export const filterStockValues = (
 
   if (ticker.exchange === "BVMF") {
     stockIndicators.assetType =
-      scratchFromSiteIndicators.assetType ??
+      scrapFromSiteIndicators.assetType ??
       yahooFinanceIndicators.assetType ??
       null;
     stockIndicators.name =
-      scratchFromSiteIndicators.name ?? yahooFinanceIndicators.name ?? null;
+      scrapFromSiteIndicators.name ?? yahooFinanceIndicators.name ?? null;
     stockIndicators.ticker =
-      scratchFromSiteIndicators.ticker ?? yahooFinanceIndicators.ticker ?? null;
+      scrapFromSiteIndicators.ticker ?? yahooFinanceIndicators.ticker ?? null;
     stockIndicators.date =
-      scratchFromSiteIndicators.date ?? yahooFinanceIndicators.date ?? null;
+      scrapFromSiteIndicators.date ?? yahooFinanceIndicators.date ?? null;
     stockIndicators.sector =
-      scratchFromSiteIndicators.sector ?? yahooFinanceIndicators.sector ?? null;
+      scrapFromSiteIndicators.sector ?? yahooFinanceIndicators.sector ?? null;
     stockIndicators.price =
-      scratchFromSiteIndicators.price ?? yahooFinanceIndicators.price ?? null;
+      scrapFromSiteIndicators.price ?? yahooFinanceIndicators.price ?? null;
     stockIndicators.pe =
-      scratchFromSiteIndicators.pe ?? yahooFinanceIndicators.pe ?? null;
+      scrapFromSiteIndicators.pe ?? yahooFinanceIndicators.pe ?? null;
     stockIndicators.pbv =
-      scratchFromSiteIndicators.pbv ?? yahooFinanceIndicators.pbv ?? null;
+      scrapFromSiteIndicators.pbv ?? yahooFinanceIndicators.pbv ?? null;
     stockIndicators.dy =
-      scratchFromSiteIndicators.dy ?? yahooFinanceIndicators.dy ?? null;
+      scrapFromSiteIndicators.dy ?? yahooFinanceIndicators.dy ?? null;
     stockIndicators.roe =
-      scratchFromSiteIndicators.roe ?? yahooFinanceIndicators.roe ?? null;
+      scrapFromSiteIndicators.roe ?? yahooFinanceIndicators.roe ?? null;
     stockIndicators.profitMargin =
-      scratchFromSiteIndicators.profitMargin ??
+      scrapFromSiteIndicators.profitMargin ??
       yahooFinanceIndicators.profitMargin ??
       null;
     stockIndicators.evEbit =
-      scratchFromSiteIndicators.evEbit ?? yahooFinanceIndicators.evEbit ?? null;
+      scrapFromSiteIndicators.evEbit ?? yahooFinanceIndicators.evEbit ?? null;
     stockIndicators.roic =
-      scratchFromSiteIndicators.roic ?? yahooFinanceIndicators.roic ?? null;
+      scrapFromSiteIndicators.roic ?? yahooFinanceIndicators.roic ?? null;
     stockIndicators.liquidity =
-      scratchFromSiteIndicators.liquidity ??
+      scrapFromSiteIndicators.liquidity ??
       yahooFinanceIndicators.liquidity ??
       null;
     stockIndicators.grossDebtNetWorth =
-      scratchFromSiteIndicators.grossDebtNetWorth ??
+      scrapFromSiteIndicators.grossDebtNetWorth ??
       yahooFinanceIndicators.grossDebtNetWorth ??
       null;
     stockIndicators.netDebtDivideByEBITDA =
-      scratchFromSiteIndicators.netDebtDivideByEBITDA ??
+      scrapFromSiteIndicators.netDebtDivideByEBITDA ??
       yahooFinanceIndicators.netDebtDivideByEBITDA ??
       null;
     stockIndicators.cagrProfit = {
       create: {
         value:
-          scratchFromSiteIndicators.cagrProfit?.create?.value ??
+          scrapFromSiteIndicators.cagrProfit?.create?.value ??
           yahooFinanceIndicators.cagrProfit?.create?.value ??
           null,
         periodYears:
-          scratchFromSiteIndicators.cagrProfit?.create?.periodYears ??
+          scrapFromSiteIndicators.cagrProfit?.create?.periodYears ??
           yahooFinanceIndicators.cagrProfit?.create?.periodYears ??
           null,
       },
@@ -158,21 +158,21 @@ export const filterStockValues = (
     stockIndicators.cagrRevenue = {
       create: {
         value:
-          scratchFromSiteIndicators.cagrRevenue?.create?.value ??
+          scrapFromSiteIndicators.cagrRevenue?.create?.value ??
           yahooFinanceIndicators.cagrRevenue?.create?.value ??
           null,
         periodYears:
-          scratchFromSiteIndicators.cagrRevenue?.create?.periodYears ??
+          scrapFromSiteIndicators.cagrRevenue?.create?.periodYears ??
           yahooFinanceIndicators.cagrRevenue?.create?.periodYears ??
           null,
       },
     };
 
-    if (scratchFromSiteIndicators.cagrProfit?.create?.value != null) {
+    if (scrapFromSiteIndicators.cagrProfit?.create?.value != null) {
       stockIndicators.cagrProfit!.create!.value =
-        scratchFromSiteIndicators.cagrProfit?.create?.value;
+        scrapFromSiteIndicators.cagrProfit?.create?.value;
       stockIndicators.cagrProfit!.create!.periodYears =
-        scratchFromSiteIndicators.cagrProfit?.create?.periodYears;
+        scrapFromSiteIndicators.cagrProfit?.create?.periodYears;
     } else if (yahooFinanceIndicators.cagrProfit?.create?.value != null) {
       stockIndicators.cagrProfit!.create!.periodYears =
         yahooFinanceIndicators.cagrProfit?.create?.periodYears;
@@ -183,11 +183,11 @@ export const filterStockValues = (
       stockIndicators.cagrProfit!.create!.periodYears = null;
     }
 
-    if (scratchFromSiteIndicators.cagrRevenue?.create?.value != null) {
+    if (scrapFromSiteIndicators.cagrRevenue?.create?.value != null) {
       stockIndicators.cagrRevenue!.create!.value =
-        scratchFromSiteIndicators.cagrRevenue?.create?.value;
+        scrapFromSiteIndicators.cagrRevenue?.create?.value;
       stockIndicators.cagrRevenue!.create!.periodYears =
-        scratchFromSiteIndicators.cagrRevenue?.create?.periodYears;
+        scrapFromSiteIndicators.cagrRevenue?.create?.periodYears;
     } else if (yahooFinanceIndicators.cagrRevenue?.create?.value != null) {
       stockIndicators.cagrRevenue!.create!.value =
         yahooFinanceIndicators.cagrRevenue?.create?.value;

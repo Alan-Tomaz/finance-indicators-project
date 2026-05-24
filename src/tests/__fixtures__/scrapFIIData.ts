@@ -10,7 +10,7 @@ const __dirname = import.meta.dirname;
 const htmlPath = path.join(__dirname, "mockCheerioFiiHtml.txt");
 export const mockCheerioFiiHtml = fs.readFileSync(htmlPath, "utf-8");
 
-export const mockScratchFiiData = {
+export const mockScrapFiiData = {
   assetType: "FII",
   date: formatDate(new Date(), LANGUAGE),
   dy: 14.027,
@@ -29,7 +29,7 @@ export const mockScratchFiiData = {
   rentability: { create: { value: 14.34, periodYears: 1 } },
 };
 
-export const mockScratchFiiDataNull = {
+export const mockScrapFiiDataNull = {
   assetType: "FII",
   date: formatDate(new Date(), LANGUAGE),
   dy: null,

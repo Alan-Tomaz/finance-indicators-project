@@ -1,11 +1,11 @@
 import assert from "node:assert";
 import { describe, it } from "node:test";
-import { scratchFIIData } from "../../services/scratchFIIData.js";
-import { mockTicketFii } from "../__fixtures__/scratchFIIData.js";
+import { scrapFIIData } from "../../services/scrapFIIData.js";
+import { mockTicketFii } from "../__fixtures__/scrapFIIData.js";
 
-describe("collectFiiDataFromScratchSite integration", () => {
+describe("collectFiiDataFromScrapSite integration", () => {
   it("should return the indicators from a fii ticker", async () => {
-    const result = await scratchFIIData(mockTicketFii);
+    const result = await scrapFIIData(mockTicketFii);
 
     assert.strictEqual(typeof result.price, "number");
     assert.strictEqual(typeof result.rentability?.create?.value, "number");
