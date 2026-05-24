@@ -1,9 +1,15 @@
+import path from "path";
 import { LANGUAGE } from "../../constants/config.js";
 import type { FiiIndicatorsCreateInput } from "../../generated/prisma/models.js";
 import type { ITicker } from "../../models/financial.js";
 import { formatDate } from "../../utils/formatDate.js";
+import fs from "fs";
 
 // FII MOCKS
+const __dirname = import.meta.dirname;
+const htmlPath = path.join(__dirname, "mockCheerioFiiHtml.txt");
+export const mockCheerioFiiHtml = fs.readFileSync(htmlPath, "utf-8");
+
 export const mockScratchFiiData = {
   assetType: "FII",
   date: formatDate(new Date(), LANGUAGE),

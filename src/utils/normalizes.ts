@@ -45,20 +45,30 @@ export function toPercent(value: number) {
   return Number((value * 100).toFixed(2));
 }
 
-export function parseBrazilianNumber(value: string): number {
-  const number = value
-    .replace(/\./g, "")
-    .replace(",", ".")
+export function parseToNumber(value: string): number {
+  let normalized = value
+    // Remove símbolos de moeda e percentual
     .replace("%", "")
     .replace("-", "")
     .replace("R$", "")
+    .replace("US$", "")
     .trim();
 
-  if (number === "") {
+  if (normalized.includes(",")) {
+    normalized = normalized.replace(/\./g, "").replace(",", ".");
+  } else if (normalized.includes(".")) {
+    const parts = normalized.split(".");
+    if (parts.length > 2) {
+      normalized = parts.slice(0, -1).join("") + "." + parts[parts.length - 1];
+    }
+    normalized = normalized.replace(",", "");
+  }
+
+  if (normalized === "") {
     return NaN;
   }
 
-  const numberFiltered = Number(number);
+  const numberFiltered = Number(normalized);
 
   return numberFiltered;
 }

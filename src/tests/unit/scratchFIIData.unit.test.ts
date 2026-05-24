@@ -3,10 +3,10 @@ import { LANGUAGE } from "../../constants/config.js";
 import assert from "node:assert";
 import { calculateFIIIndicators } from "../../services/scratchFIIData.js";
 import {
+  mockCheerioFiiHtml,
   mockScratchFiiData,
   mockTicketFii,
 } from "../__fixtures__/scratchFIIData.js";
-import { mockCheerioFiiHtml } from "../__fixtures__/cheerioFetchedHtml.js";
 
 describe("calculateIndicatorsFii units", () => {
   it("should calculate indicators correctly", () => {

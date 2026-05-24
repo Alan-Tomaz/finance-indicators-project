@@ -3,7 +3,7 @@ import { describe, it } from "node:test";
 import {
   normalizeDy,
   normalizeTickerForYahooFinance,
-  parseBrazilianNumber,
+  parseToNumber,
   toPercent,
 } from "../../utils/normalizes.js";
 import {
@@ -18,8 +18,8 @@ import { filterStockValues } from "../../utils/stock.js";
 describe("normalizers units", () => {
   it("check normalizers", () => {
     assert.strictEqual(toPercent(2), 200.0);
-    assert.strictEqual(parseBrazilianNumber(" R$2%,."), 2);
-    assert.strictEqual(parseBrazilianNumber("-"), NaN);
+    assert.strictEqual(parseToNumber(" R$2%,."), 2);
+    assert.strictEqual(parseToNumber("-"), NaN);
     assert.strictEqual(normalizeDy(0.05), 5);
     assert.strictEqual(
       normalizeTickerForYahooFinance(mockTicketStockForYahooFinance),
