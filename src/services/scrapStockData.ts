@@ -159,10 +159,13 @@ export const calculateStockIndicatorsFromScrap = (
   let evEbit;
   // netDebtEbitda
   let netDebtEbitda;
-  $(".cell").each((_: any, element: any) => {
+  $("article.indicator-card").each((_: any, element: any) => {
     const title = $(element).find("span").text().trim();
     const titleh3 = $(element).find("h3").text().trim();
-    const value = $(element).find("div.value span").text().trim();
+    const value = $(element)
+      .find("div.indicator-card-value span")
+      .text()
+      .trim();
 
     // D.Y
     if (/Dividend Yield/gi.test(title)) {
@@ -233,13 +236,25 @@ export const calculateStockIndicatorsFromScrap = (
     }
 
     // netDebtEbitda
-    if (/Dívida Líquida \/ Ebitda/gi.test(title)) {
+    if (/Divida Liquida\/Ebitda/gi.test(title)) {
       if (!isNaN(parseToNumber(value))) {
         netDebtEbitda = parseToNumber(value);
       }
     }
 
-    if (/Dívida Bruta \/ Patrimônio/gi.test(title)) {
+    if (/Dívida Líquida\/Ebitda/gi.test(title)) {
+      if (!isNaN(parseToNumber(value))) {
+        netDebtEbitda = parseToNumber(value);
+      }
+    }
+
+    if (/Divida Bruta\/Patrimônio/gi.test(title)) {
+      if (!isNaN(parseToNumber(value))) {
+        debtToEquityPercent = parseToNumber(value);
+      }
+    }
+
+    if (/Dívida Bruta\/Patrimônio/gi.test(title)) {
       if (!isNaN(parseToNumber(value))) {
         debtToEquityPercent = parseToNumber(value);
       }
